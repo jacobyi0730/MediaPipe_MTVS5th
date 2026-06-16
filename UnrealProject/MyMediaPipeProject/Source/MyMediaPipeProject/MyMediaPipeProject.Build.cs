@@ -19,7 +19,8 @@ public class MyMediaPipeProject : ModuleRules
 			"Sockets",
 			"Networking",
 			"Json",
-			"JsonUtilities"
+			"JsonUtilities",
+			"WebSockets"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });

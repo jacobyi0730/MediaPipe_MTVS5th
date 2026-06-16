@@ -1,15 +1,28 @@
-# MediaPipe -> Unreal UDP
+# MediaPipe -> Unreal transport setup
 
-## Python sender
+## Python server
 
-Run this from `C:\Projects\MediaPipe`:
+The shared server script is:
 
 ```powershell
-.venv\Scripts\activate
+python mediapipe_gesture_server.py --transport udp --host 127.0.0.1 --port 7001 --show-preview
+```
+
+Supported transports:
+
+- `udp`
+- `tcp`
+- `websocket`
+
+The legacy UDP-only entry point still works:
+
+```powershell
 python mediapipe_udp_sender.py
 ```
 
-It sends UDP binary packets to `127.0.0.1:7001` with this layout:
+## Packet format
+
+All transports use the same 12-byte binary packet:
 
 ```text
 2 bytes  identifier   0x4D50 ("MP")
@@ -20,35 +33,44 @@ It sends UDP binary packets to `127.0.0.1:7001` with this layout:
 
 Gesture payload values:
 
+- `0`: unknown or no hand
 - `1`: fist
 - `2`: scissors
 - `3`: paper
-- `0`: unknown or no hand
 
 ## Unreal side
 
-The Unreal pawn `ASocketPlayer` now:
+`ASocketPlayer` now exposes these settings:
 
-- binds UDP on port `7001`
-- receives binary UDP packets every tick
-- validates `identifier`, `cmd`, and `payload_len`
-- parses the 4-byte gesture payload
-- writes the decoded gesture into `WBP_LogUI` through `TextLog`
+- `TransportType`: `UDP`, `TCP`, or `WebSocket`
+- `bAutoLaunchServer`: launch the Python MediaPipe server automatically
+- `bShowServerPreview`: show the OpenCV preview window
+- `ServerHost`
+- `ServerPort`
+- `PythonExecutablePath`
+- `ServerScriptPath`
+
+If `bAutoLaunchServer` is enabled, Unreal launches:
+
+- `mediapipe_gesture_server.py`
+- with the selected transport
+- on the configured host and port
 
 ## Unreal editor steps
 
 1. Open `UnrealProject/MyMediaPipeProject/MyMediaPipeProject.uproject`
 2. Rebuild the C++ project when Unreal asks
-3. Make sure `BP_SocketPlayer` uses `ASocketPlayer`
-4. Make sure `LogUIFactory` points to `WBP_LogUI`
-5. Run PIE
-6. Start `mediapipe_udp_sender.py`
+3. Open `BP_SocketPlayer`
+4. Set `TransportType` to the protocol you want
+5. Make sure `LogUIFactory` points to `WBP_LogUI`
+6. Run PIE
 
-If everything is connected, the widget should show:
+The widget should show:
 
+- selected transport
 - packet identifier
 - command
 - payload length
 - gesture code
-- gesture name
-- UDP port
+- decoded gesture name
+- host and port
