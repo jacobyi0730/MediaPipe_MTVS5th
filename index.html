@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediaPipe Rock Paper Scissors</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero">
+      <p class="eyebrow">MediaPipe Tasks Vision</p>
+      <h1>Real-time Rock, Paper, Scissors</h1>
+      <p class="lede">
+        The webcam feed is analyzed with MediaPipe hand landmarks and then
+        classified into <strong>Fist</strong>, <strong>Scissors</strong>, or
+        <strong>Paper</strong>.
+      </p>
+      <div class="status-row">
+        <div class="status-card">
+          <span class="status-label">Camera</span>
+          <strong id="camera-status">Idle</strong>
+        </div>
+        <div class="status-card">
+          <span class="status-label">Model</span>
+          <strong id="model-status">Not loaded</strong>
+        </div>
+        <div class="status-card emphasis">
+          <span class="status-label">Current Gesture</span>
+          <strong id="gesture-label">Waiting...</strong>
+        </div>
+      </div>
+      <button id="start-button" class="start-button">Start Webcam</button>
+      <p class="hint">Allow camera access in the browser when prompted.</p>
+    </section>
+
+    <section class="stage">
+      <div class="video-frame">
+        <video id="webcam" autoplay playsinline muted></video>
+        <canvas id="overlay"></canvas>
+      </div>
+      <aside class="legend">
+        <h2>Rules</h2>
+        <ul>
+          <li><strong>Fist</strong>: all fingers folded</li>
+          <li><strong>Scissors</strong>: index and middle extended</li>
+          <li><strong>Paper</strong>: fingers fully open</li>
+        </ul>
+        <p id="debug-label" class="debug-label">
+          Keep one hand centered and upright for the most stable result.
+        </p>
+      </aside>
+    </section>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
